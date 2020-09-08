@@ -115,9 +115,19 @@ class FormatElementWdg(SimpleTableElementWdg):
         value = self.get_value()
         widget_type = self.get_option("type")
         
+
+        justify = self.get_option('justify')
+        if justify:
+            self.justify = justify
+        else:
+            self.justify = None
+
+
+
         if widget_type in ['integer', 'float', 'timecode', 'currency']:
-            top.add_style("float: right")
-            self.justify = "right"
+            if not self.jsityf:
+                top.add_style("float: right")
+                self.justify = "right"
 
         elif widget_type in ['date','time']:
             name = self.get_name()
@@ -128,8 +138,10 @@ class FormatElementWdg(SimpleTableElementWdg):
                 value = str(value)
 
         else:
-            top.add_style("float: left")
-            self.justify = "left"
+            if not self.justify:
+                top.add_style("float: left")
+                self.justify = "left"
+
         top.add_style("padding-right: 3px")
 
         top.add_style("min-height: 15px")
@@ -246,6 +258,7 @@ class FormatElementWdg(SimpleTableElementWdg):
 
     def number_format(self, num, places=0):
         """Format a number according to locality and given places"""
+        num = float(num)
         import locale
         locale.setlocale(locale.LC_ALL, "")
         return locale.format("%.*f", (places, num), True)
@@ -764,6 +777,9 @@ class FormatElementWdg(SimpleTableElementWdg):
         if format == 'Checkbox':
             td.add_attr("spt_input_type", "inline")
             td.add_style("text-align: center")
+
+        if self.justify:
+            td.add_style("text-align: %s" % self.justify)
         
  
 

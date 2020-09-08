@@ -1138,6 +1138,10 @@ class SelectWdg(BaseInputWdg):
         if bs != False:
             self.add_class("form-control")
 
+        self.add_color("color", "var(--spt_palette_color)")
+        self.add_color("background", "var(--spt_palette_background)")
+        self.add_style("padding", "0px 5px")
+
 
 
     def get_related_type(self):
@@ -1459,15 +1463,13 @@ class SelectWdg(BaseInputWdg):
 
     def get_styles(self):
 
-        bgcolor = self.get_color("background", 10)
-        fgcolor = self.get_color("foreground")
         styles = HtmlElement.style('''
-            select {
-                background: %s;
-                color: %s;
-            }
+        select option {
+            background: var(--spt_palette_background);
+            color: var(--spt_palette_color);
+        }
 
-        ''' % (bgcolor, fgcolor)
+        '''
         )
         return styles
 
@@ -1525,7 +1527,6 @@ class SelectWdg(BaseInputWdg):
         # SELECT drop down size ...
         self.set_attr('spt_select_size',sz)
 
-
         # assign all the labels and values
         if not self.has_set_options:
             self.set_dom_options()
@@ -1582,6 +1583,7 @@ class SelectWdg(BaseInputWdg):
             if self.kwargs.get("required") in [True, 'true']:
                 sel = BaseInputWdg.get_class_display(self)
                 wdg = SpanWdg()
+                wdg.add( self.get_styles() )
                 self._add_required(wdg, offset_x=6)
                 wdg.add(sel)
                 return wdg
@@ -1590,6 +1592,7 @@ class SelectWdg(BaseInputWdg):
         else:
             sel = BaseInputWdg.get_class_display(self)
             span = SpanWdg(self.label, css=self.css)
+            span.add( self.get_styles() )
             span.add(sel)
             span.add(self.append_widget)
             return span
